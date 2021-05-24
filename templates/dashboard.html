@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+   <div>Current Posts on Dashboard Page:</div>
+
+
+  {%for row in got_username%}
+
+         {{row[1]}}
+
+
+
+    <form action = "/edit/{{row[0]}}" method="GET">
+       <input type ="hidden" name ="got_username" value ="{{row[0]}}">
+        <input type ="submit" name ="got_username" value ="Edit">
+
+    </form>
+
+<form action = "/delete/{{row[0]}}" method="POST">
+     <tr><td></td><td><input type ="hidden" name ="got_username" value ="{{row[0]}}"></td></tr>
+    <tr><td></td><td><input type ="submit" name ="got_username" value ="Delete"></td></tr>
+    </form>
+   {%endfor%}
+
+
+   <a href="/add">Add new post</a>
+
+</body>
+</html>
