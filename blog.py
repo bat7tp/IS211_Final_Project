@@ -7,7 +7,10 @@ import os
 
 app = Flask(__name__)
 
-app.secret_key = 'asecretkeythatalmostnobodyknowsss'
+app.secret_key = 'asecretkeythatalmostnobodyk'
+
+PERMANENT_SESSION_LIFETIME = datetime.timedelta(minutes=5)
+SESSION_REFRESH_EACH_REQUEST = True
 
 def db_connection():
     conn = None
@@ -44,6 +47,7 @@ def open_post():
 
 @app.route("/dashboard")
 def dash():
+    print(session)
 
     if 'user_id' in session:
         got_username = get_username_from_id()
@@ -62,12 +66,9 @@ def add_submit():
     cursor = conn.cursor()
 
     if request.method == "POST":
-        print("in method")
         try:
-            print("in try")
             title = request.form["book_title"]
             author = request.form["author_name"]
-            # author = get_username_from_id()
             content = request.form["content"]
             publication_date = request.form["date"]
             print(title)
@@ -76,10 +77,9 @@ def add_submit():
             date = datetime.datetime.strptime(publication_date, "%m-%d-%Y").date()
             cursor.execute("INSERT INTO posts (title, author, content, publication_date) VALUES (?, ?, ?, ?)", [title,
                                                                                                     author,
-                                                                                                             content,
+                                                                                                content,
                                                                                                                 date])
             conn.commit()
-            print("Title successfully added")
 
 
         except lite.Error as e:
@@ -107,7 +107,8 @@ def edit(postid):
             edited_date = request.form["edit_date"]
 
             if edited_date != "":
-                cursor.execute("UPDATE posts SET publication_date = ? WHERE post_id = ?", [edited_date, postid])
+                editing_date = datetime.datetime.strptime(edited_date, "%m-%d-%Y").date()
+                cursor.execute("UPDATE posts SET publication_date = ? WHERE post_id = ?", [editing_date, postid])
                 conn.commit()
                 print(" date Edits successful")
 
